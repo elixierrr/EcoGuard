@@ -12,6 +12,34 @@ const getReports = async (req, res) => {
   }
 };
 
+// Fungsi untuk mengambil laporan berdasarkan kategori
+const getReportsByCategory = async (req, res) => {
+  const { category } = req.params; // Mengambil kategori dari parameter URL
+
+  try {
+    // Query untuk mengambil laporan berdasarkan kategori
+    const [results] = await pool.query(
+      "SELECT * FROM reports WHERE category = ?",
+      [category]
+    );
+
+    // Jika tidak ada laporan yang ditemukan
+    if (results.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No reports found for this category" });
+    }
+
+    // Jika laporan ditemukan
+    res.status(200).json(results);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching reports by category",
+      error: error.message,
+    });
+  }
+};
+
 // Fungsi untuk menambahkan laporan
 export const createReport = async (req, res) => {
   const { title, category, date, location, reportContent } = req.body;
@@ -119,6 +147,7 @@ const reportController = {
   createReport,
   updateReport,
   deleteReport,
+  getReportsByCategory,
 };
 
 // Ekspor objek reportController sebagai default

@@ -15,5 +15,6 @@ router.put(
 router.delete("/:id", reportController.deleteReport);
 
 router.post("/create", upload.single("uploadImages"), createReport);
+router.get("/:category", reportController.getReportsByCategory);
 
 export default router;
