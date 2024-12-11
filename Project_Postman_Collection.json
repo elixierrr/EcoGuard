@@ -1,0 +1,247 @@
+{
+    "info": {
+        "name": "API Collection",
+        "description": "Postman collection for testing API endpoints.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Get API Status",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/status",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "v1",
+                        "status"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Register User",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"securepassword\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/v1/auth/register",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "v1",
+                        "auth",
+                        "register"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Login User",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"securepassword\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/v1/auth/login",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "v1",
+                        "auth",
+                        "login"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Create Report",
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "title",
+                            "value": "Report Title",
+                            "type": "text"
+                        },
+                        {
+                            "key": "category",
+                            "value": "Category Name",
+                            "type": "text"
+                        },
+                        {
+                            "key": "date",
+                            "value": "2024-12-01",
+                            "type": "text"
+                        },
+                        {
+                            "key": "location",
+                            "value": "Sample Location",
+                            "type": "text"
+                        },
+                        {
+                            "key": "reportContent",
+                            "value": "Detailed content of the report.",
+                            "type": "text"
+                        },
+                        {
+                            "key": "image",
+                            "type": "file",
+                            "src": ""
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/v1/reports/1",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "v1",
+                        "reports",
+                        "1"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Get All Reports",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/reports",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "v1",
+                        "reports"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Get Report By ID",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/reports/1",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "v1",
+                        "reports",
+                        "1"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Update Report",
+            "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "title",
+                            "value": "Updated Report Title",
+                            "type": "text"
+                        },
+                        {
+                            "key": "category",
+                            "value": "Updated Category Name",
+                            "type": "text"
+                        },
+                        {
+                            "key": "date",
+                            "value": "2024-12-02",
+                            "type": "text"
+                        },
+                        {
+                            "key": "location",
+                            "value": "Updated Location",
+                            "type": "text"
+                        },
+                        {
+                            "key": "reportContent",
+                            "value": "Updated detailed content of the report.",
+                            "type": "text"
+                        },
+                        {
+                            "key": "image",
+                            "type": "file",
+                            "src": ""
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/v1/reports/1",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "v1",
+                        "reports",
+                        "1"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Delete Report",
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/api/v1/reports/1",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "v1",
+                        "reports",
+                        "1"
+                    ]
+                }
+            }
+        }
+    ]
+}
