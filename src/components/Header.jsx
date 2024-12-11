@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Logo from '../assets/logo.png';
 
 const Header = () => {
+  const navigate = useNavigate();
+
   const headerStyle = {
     backgroundColor: '#DAF5B6',
     padding: '10px 0',
@@ -23,6 +26,7 @@ const Header = () => {
     borderRadius: '5px',
     padding: '8px 15px',
     border: 'none',
+    cursor: 'pointer',
   };
 
   return (
@@ -51,34 +55,39 @@ const Header = () => {
           <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
-                <a className="nav-link px-2" href="/" style={navLinkStyle}>
+                <a className="nav-link px-2" href="/user" style={navLinkStyle}>
                   Home
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link px-2" href="/report" style={navLinkStyle}>
+                <a className="nav-link px-2" href="/user/report" style={navLinkStyle}>
                   Report
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link px-2" href="/statistics" style={navLinkStyle}>
+                <a className="nav-link px-2" href="/user/statistics" style={navLinkStyle}>
                   Statistics
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link px-2" href="/article" style={navLinkStyle}>
+                <a className="nav-link px-2" href="/user/article" style={navLinkStyle}>
                   Article
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link px-2" href="/contact" style={navLinkStyle}>
+                <a className="nav-link px-2" href="/user/contact" style={navLinkStyle}>
                   Contact
                 </a>
               </li>
             </ul>
 
             {/* Login Button */}
-            <button style={{ ...loginButtonStyle, marginLeft: '20px' }} href="/login">Login</button>
+            <button
+              style={{ ...loginButtonStyle, marginLeft: '20px' }}
+              onClick={() => navigate('/login')}
+            >
+              Login
+            </button>
           </div>
         </nav>
       </div>

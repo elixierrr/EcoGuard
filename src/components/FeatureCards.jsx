@@ -3,8 +3,10 @@ import React from 'react';
 const FeatureCards = () => {
   const features = [
     { title: 'Statistics', description: 'View environmental data.', link: '/statistics' },
-    { title: 'Article', description: 'Read environmental articles.', link: '/article' },
+    { title: 'Articles', description: 'Read environmental articles.', link: '/articles' },
     { title: 'Contact', description: 'Reach out to us.', link: '/contact' },
+    { title: 'Report History', description: 'Track your report progress.', link: '/history' },
+    { title: 'Educational Resources', description: 'Learn how to protect the environment.', link: '/resources' },
   ];
 
   return (
@@ -19,6 +21,7 @@ const FeatureCards = () => {
                 borderRadius: '10px',
                 boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
                 padding: '20px',
+                marginBottom: '20px',
               }}
             >
               <h3 style={{ color: '#388e3c', marginBottom: '10px' }}>{feature.title}</h3>

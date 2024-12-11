@@ -1,23 +1,72 @@
 import React from 'react';
+import { Bar, Pie } from 'react-chartjs-2';
+import 'chart.js/auto';
 
 const Statistics = () => {
-  const sectionStyle = {
-    background: 'linear-gradient(to bottom, #DAF5B6, #ffffff)',
-    padding: '50px 20px',
-    borderRadius: '10px',
-    marginBottom: '20px',
-    textAlign: 'center',
+  // Contoh Data Dinamis
+  const statsData = {
+    totalReports: 270,
+    airPollution: 120,
+    wasteManagement: 85,
+    waterPollution: 65,
+  };
+
+  // Data untuk Grafik
+  const barData = {
+    labels: ['Air Pollution', 'Waste Management', 'Water Pollution'],
+    datasets: [
+      {
+        label: 'Reported Issues',
+        data: [
+          statsData.airPollution,
+          statsData.wasteManagement,
+          statsData.waterPollution,
+        ],
+        backgroundColor: ['#81c784', '#64b5f6', '#4db6ac'],
+      },
+    ],
+  };
+
+  const pieData = {
+    labels: ['Air Pollution', 'Waste Management', 'Water Pollution'],
+    datasets: [
+      {
+        data: [
+          statsData.airPollution,
+          statsData.wasteManagement,
+          statsData.waterPollution,
+        ],
+        backgroundColor: ['#81c784', '#64b5f6', '#4db6ac'],
+      },
+    ],
   };
 
   return (
-    <section style={sectionStyle}>
+    <section
+      style={{
+        background: 'linear-gradient(to bottom, #DAF5B6, #ffffff)',
+        padding: '50px 20px',
+        borderRadius: '10px',
+        marginBottom: '20px',
+        textAlign: 'center',
+      }}
+    >
       <div className="container">
-        <h1 className="text-success mb-4" style={{ fontSize: '28px' }}>Environmental Statistics</h1>
-        <p className="text-muted mb-5" style={{ fontSize: '18px' }}>
-          Here are some real-time statistics on the environmental problems reported by users.
+        <h1
+          className="text-success mb-4"
+          style={{ fontSize: '28px' }}
+        >
+          Environmental Statistics
+        </h1>
+        <p
+          className="text-muted mb-5"
+          style={{ fontSize: '18px' }}
+        >
+          Real-time statistics on environmental issues reported by users.
         </p>
-        <div className="row g-4">
-          {/* Air Pollution Card */}
+
+        {/* Summary Section */}
+        <div className="row g-4 mb-5">
           <div className="col-lg-4 col-md-6">
             <div
               className="p-4 bg-light text-center"
@@ -27,12 +76,10 @@ const Statistics = () => {
                 boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
               }}
             >
-              <h3 className="text-success">Air Pollution</h3>
-              <p>Reported Issues: 120</p>
+              <h3 className="text-success">Total Reports</h3>
+              <p>{statsData.totalReports}</p>
             </div>
           </div>
-
-          {/* Waste Management Card */}
           <div className="col-lg-4 col-md-6">
             <div
               className="p-4 bg-light text-center"
@@ -42,12 +89,10 @@ const Statistics = () => {
                 boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
               }}
             >
-              <h3 className="text-success">Waste Management</h3>
-              <p>Reported Issues: 85</p>
+              <h3 className="text-success">Laporan Terselesaikan</h3>
+              <p>185</p>
             </div>
           </div>
-
-          {/* Water Pollution Card */}
           <div className="col-lg-4 col-md-6">
             <div
               className="p-4 bg-light text-center"
@@ -57,9 +102,24 @@ const Statistics = () => {
                 boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
               }}
             >
-              <h3 className="text-success">Water Pollution</h3>
-              <p>Reported Issues: 65</p>
+              <h3 className="text-success">Area Terdampak</h3>
+              <p>42 Regions</p>
             </div>
+          </div>
+        </div>
+
+        {/* Charts Section */}
+        <div className="row">
+          {/* Bar Chart */}
+          <div className="col-md-6">
+            <h4 className="text-success">Issues Reported</h4>
+            <Bar data={barData} options={{ maintainAspectRatio: true }} />
+          </div>
+
+          {/* Pie Chart */}
+          <div className="col-md-6">
+            <h4 className="text-success">Category Distribution</h4>
+            <Pie data={pieData} options={{ maintainAspectRatio: true }} />
           </div>
         </div>
       </div>

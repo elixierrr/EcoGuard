@@ -1,62 +1,137 @@
-import React from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import axios from 'axios'; // Import axios
+import Logo from '../assets/logo.png';
 
-function Login() {
+const Login = ({ setIsLoggedIn }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false); // State untuk loading
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Set loading menjadi true
+
+    try {
+      const response = await axios.post('https://localhost:3001/api/v1/auth/login', {
+        email,
+        password,
+      });
+
+      if (response.status === 200) {
+        const { token } = response.data; // Asumsikan API mengembalikan token
+        localStorage.setItem('token', token); // Simpan token ke localStorage
+        localStorage.setItem('isLoggedIn', 'true');
+        setIsLoggedIn(true);
+        navigate('/user'); // Redirect ke halaman user
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Login failed: ' + (error.response?.data?.message || 'Please try again.'));
+    } finally {
+      setLoading(false); // Set loading menjadi false
+    }
+  };
+
+  const pageStyle = {
+    display: 'flex',
+    minHeight: '100vh',
+    backgroundColor: '#DAF5B6',
+  };
+
+  const coverStyle = {
+    flex: 0.5,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '20px',
+    backgroundColor: '#ffffff',
+    borderTopRightRadius: '50px',
+    borderBottomRightRadius: '50px',
+    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+  };
+
+  const logoStyle = {
+    width: '500px',
+    transform: 'rotate(90deg)',
+    marginBottom: '20px',
+  };
+
+  const formContainerStyle = {
+    flex: 1.5,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '20px',
+  };
+
+  const formStyle = {
+    width: '100%',
+    maxWidth: '400px',
+    backgroundColor: '#ffffff',
+    padding: '20px',
+    borderRadius: '10px',
+    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+  };
+
+  const buttonStyle = {
+    backgroundColor: loading ? '#a5d6a7' : '#388e3c',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    padding: '10px',
+    width: '100%',
+    fontSize: '16px',
+    cursor: loading ? 'not-allowed' : 'pointer',
+  };
+
   return (
-    <Container className="login-container">
-      <Row className="justify-content-md-center">
-        <Col md={6}>
-          <div className="logo">
-            {/* Logo ECOGUARD */}
-            <h1 style={{ textAlign: 'center', fontSize: '3rem', marginBottom: '2rem' }}>ECOGUARD</h1>
-          </div>
-          <Form>
-            <Form.Group controlId="formBasicUsername">
-              <Form.Control
-                type="text"
-                placeholder="Username"
-                style={{
-                  borderRadius: '5px',
-                  border: '1px solid #ccc',
-                  padding: '10px',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                }}
-              />
-            </Form.Group>
+    <div style={pageStyle}>
+      <div style={coverStyle}>
+        <img src={Logo} alt="EcoGuard Logo" style={logoStyle} />
+      </div>
 
-            <Form.Group controlId="formBasicPassword">
-              <Form.Control
+      <div style={formContainerStyle}>
+        <div style={formStyle}>
+          <h2 className="text-center text-success" style={{ fontSize: '28px' }}>Login</h2>
+          <form onSubmit={handleLogin}>
+            <div className="form-group mt-3">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                placeholder="Enter your email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="form-group mt-3">
+              <label htmlFor="password">Password</label>
+              <input
                 type="password"
-                placeholder="Password"
-                style={{
-                  borderRadius: '5px',
-                  border: '1px solid #ccc',
-                  padding: '10px',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-                }}
+                className="form-control"
+                id="password"
+                placeholder="Enter your password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-            </Form.Group>
-
-            <Button
-              variant="primary"
-              type="submit"
-              style={{
-                backgroundColor: '#38C3A1',
-                color: '#fff',
-                padding: '10px 20px',
-                borderRadius: '5px',
-                border: 'none',
-                cursor: 'pointer',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-              }}
-            >
-              Login
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+            </div>
+            <button type="submit" style={buttonStyle} className="mt-4" disabled={loading}>
+              {loading ? 'Logging in...' : 'Login'}
+            </button>
+          </form>
+          <p className="text-center text-muted mt-3" style={{ fontSize: '14px' }}>
+            Don't have an account? <a href="/register" className="text-success">Register here</a>
+          </p>
+        </div>
+      </div>
+    </div>
   );
-}
+};
 
 export default Login;
