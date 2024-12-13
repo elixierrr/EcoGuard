@@ -9,6 +9,8 @@ const apiRoutes = require('#routes/api');
 // Policies:
 const accessTokenMiddleware = require('#policies/accessToken.policy');
 const refreshTokenMiddleware = require('#policies/refreshToken.policy');
+const adminRoleMiddleware = require('#policies/adminRole.policy');
+
 // Mapper of routes to controllers.
 const mapRoutes = require('express-routes-mapper');
 
@@ -26,11 +28,17 @@ function _setUpRoutes(options={}) {
 			// Secure refresh route and logout with JWT refresh token middleware:
 			app.use(`/api/${versionString}/auth/refresh`, refreshTokenMiddleware);
 			app.use(`/api/${versionString}/auth/logout`, refreshTokenMiddleware);
-
+			app.all(`/api/${versionString}/private/admin/*`, 
+                accessTokenMiddleware, 
+                adminRoleMiddleware
+            );
 
 			// Set API routes for express application
 			app.use(`/api/${versionString}`, mapRoutes(apiRoutes(versionString).public, 'app/controllers/api/'));
 			app.use(`/api/${versionString}/private`, mapRoutes(apiRoutes(versionString).private, 'app/controllers/api/'));
+			app.use(`/api/${versionString}/private/admin`, 
+                mapRoutes(apiRoutes(versionString).admin, 'app/controllers/api/')
+            );
 		});
 
 		// Everything's ok, continue.

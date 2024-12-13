@@ -13,6 +13,7 @@
 		"lint:fix": "eslint --fix ."
 	},
 	"dependencies": {
+		"@tensorflow/tfjs": "^4.22.0",
 		"bcrypt": "^5.0.0",
 		"body-parser": "^1.20.1",
 		"core-js": "^2.6.11",

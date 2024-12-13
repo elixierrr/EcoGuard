@@ -7,7 +7,7 @@ module.exports = ReportsController;
 function ReportsController() {
   const _create = async (req, res) => {
     try {
-      const { title, category, date, location, reportContent } = req.body;
+      const { title, category, date, location, reportContent, severity } = req.body;
       const image = req.file?.filename; // Filename dari file upload
       const { userId } = req.params; 
 
@@ -17,6 +17,7 @@ function ReportsController() {
         date,
         location,
         reportContent,
+        severity,
         image,
         createdBy:userId
       });
@@ -49,6 +50,17 @@ function ReportsController() {
     }
   };
 
+  const _getByUserId = async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const reports = await reportsFacade.getReportsByUserId(userId);
+      return createOKResponse({ res, content: reports });
+    } catch (error) {
+      console.error('ReportsController._getByUserId error:', error);
+      return createErrorResponse({ res, error: { message: error.message }, status: 400 });
+    }
+  };
+
   const _update = async (req, res) => {
     try {
       const { id } = req.params;
@@ -78,6 +90,7 @@ function ReportsController() {
     create: [upload.single('image'), _create], 
     getAll: _getAll,
     getById: _getById,
+    getbyUserId: _getByUserId,
     update: [upload.single('image'), _update], 
     delete: _delete
   };

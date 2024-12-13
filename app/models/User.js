@@ -27,6 +27,11 @@ const User = database.define(
 			type: DataTypes.STRING(175),
 			allowNull: true
 		},
+		role: {
+			type: DataTypes.ENUM('user', 'admin'),
+			defaultValue: 'user',
+			allowNull: false
+		},
 
 		// Example of virtual field:
 		fullName: {

@@ -33,6 +33,11 @@ const Report = database.define(
       type: DataTypes.STRING(255),
       allowNull: true
     },
+    status: {
+      type: DataTypes.ENUM('Pending', 'In Progress', 'Completed'),
+      allowNull: false,
+      defaultValue: 'Pending'
+    },
     createdBy: {
       type: DataTypes.INTEGER, // Relasi ke tabel User (atau tipe lain sesuai kebutuhan)
       allowNull: false

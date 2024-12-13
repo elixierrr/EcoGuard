@@ -7,14 +7,4 @@ module.exports = {
 	'POST /auth/validate': 'UsersController.validate',
 	'POST /auth/refresh': 'UsersController.refresh',
 	'POST /auth/logout': 'UsersController.logout',
-
-	//Report
-	'GET /reports': 'ReportsController.getAll',
-	'GET /reports/:id': 'ReportsController.getById',
-	'POST /reports/:userId': 'ReportsController.create',
-
-	//Article
-	'GET /articles': 'ArticlesController.getAll',
-	'GET /articles/:id': 'ArticlesController.getById',
-	'POST /articles/:userId': 'ArticlesController.create',
 };

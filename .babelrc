@@ -10,7 +10,8 @@
 				"#policies":"./app/policies",
 				"#routes": "./app/routes",
 				"#services":"./app/services",
-				"#utils":"./app/utils"
+				"#utils":"./app/utils",
+				"#ai": "./app/ai"
 			}
 		}]
 	]

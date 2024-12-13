@@ -1,9 +1,12 @@
 module.exports = {
-	'GET /users/name': 'UsersController.getFullName',
+	//Report
+	'GET /reports': 'ReportsController.getAll',
+	'GET /reports/:id': 'ReportsController.getById',
+	'POST /reports/:userId': 'ReportsController.create',
+	'GET /reports/user/:userId': 'ReportsController.getbyUserId',
 
-	'PUT /reports/:id': 'ReportsController.update',
-	'DELETE /reports/:id': 'ReportsController.delete',
-
-	'PUT /articles/:id': 'ArticlesController.update',
-	'DELETE /articles/:id': 'ArticlesController.delete',
+	//Article
+	'GET /articles': 'ArticlesController.getAll',
+	'GET /articles/:id': 'ArticlesController.getById',
+	'POST /articles/:userId': 'ArticlesController.create',
 };

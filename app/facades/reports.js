@@ -4,6 +4,7 @@ module.exports = {
   createReport,
   getReports,
   getReportById,
+  getReportsByUserId,
   updateReport,
   deleteReport
 };
@@ -18,6 +19,10 @@ async function getReports() {
 
 async function getReportById(id) {
   return Report.findByPk(id);
+}
+
+async function getReportsByUserId(userId) {
+  return Report.findAll({ where: { createdBy: userId } });
 }
 
 async function updateReport(id, data) {
