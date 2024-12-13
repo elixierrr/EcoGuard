@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/authContext';
+import axios from 'axios';
 
 const CreateArticle = () => {
-  const [formData, setFormData] = useState({
+  const { token } = useAuth();
+  const [formState, setFormState] = useState({
     title: '',
     description: '',
     category: '',
@@ -10,24 +13,49 @@ const CreateArticle = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormState((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
   const handleFileChange = (e) => {
-    setFormData((prev) => ({
+    setFormState((prev) => ({
       ...prev,
       image: e.target.files[0],
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic for sending data to backend
-    console.log('Submitted Article Data:', formData);
-    alert('Article created successfully!');
+
+    try {
+      const formData = new FormData();
+      formData.append('title', formState.title);
+      formData.append('description', formState.description);
+      formData.append('category', formState.category);
+      formData.append('image', formState.image);
+
+      const response = await axios.post('http://localhost:3001/api/v1/articles/', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Menggunakan token dari authContext
+        },
+      });
+
+      console.log('Token:', token); // Tambahkan ini untuk debugging
+      console.log('Response:', response);
+      alert('Article created successfully!');
+      // Tambahkan tindakan lain jika perlu, seperti mereset form atau mengarahkan pengguna
+    } catch (error) {
+      console.error('Error creating article:', error);
+
+      // Memeriksa apakah error.response dan error.response.data ada
+      if (error.response && error.response.data) {
+        alert(`Error: ${error.response.data.message}`);
+      } else {
+        alert('Error: Something went wrong.');
+      }
+    }
   };
 
   return (
@@ -41,7 +69,7 @@ const CreateArticle = () => {
             id="title"
             name="title"
             className="form-control"
-            value={formData.title}
+            value={formState.title}
             onChange={handleChange}
             required
           />
@@ -53,7 +81,7 @@ const CreateArticle = () => {
             name="description"
             className="form-control"
             rows="4"
-            value={formData.description}
+            value={formState.description}
             onChange={handleChange}
             required
           ></textarea>
@@ -65,7 +93,7 @@ const CreateArticle = () => {
             id="category"
             name="category"
             className="form-control"
-            value={formData.category}
+            value={formState.category}
             onChange={handleChange}
             required
           />

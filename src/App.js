@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useAuth, AuthProvider } from './context/authContext';
+
 import PublicHeader from './components/PubHeader';
 import AdminHeader from './components/AdminHeader';
 import Header from './components/Header';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Halaman Publik
 import Home from './pages/Home';
@@ -24,47 +27,58 @@ import AdminUpdateArticle from './admin/articles/update';
 import AdminReports from './admin/reports/index';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, role, logout, isLoading } = useAuth();
 
-  // Cek status login saat aplikasi pertama kali dimuat
-  useEffect(() => {
-    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(loggedIn);
-  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>; // Tampilkan indikator loading
+  }
 
   const renderHeader = () => {
-    if (isLoggedIn) {
-      return <Header />;
+    const noHeaderRoutes = ['/login', '/register'];
+    if (noHeaderRoutes.includes(window.location.pathname)) {
+      return null;
     }
-    return <PublicHeader />;
+    if (!isLoggedIn) {
+      return <PublicHeader />;
+    }
+    if (role === 'admin') {
+      return <AdminHeader onLogout={logout} />;
+    }
+    return <Header onLogout={logout} />;
   };
 
   return (
-    <Router>
+    <>
       {renderHeader()}
       <Routes>
-        {/* Rute Publik */}
+        {/* Halaman Publik */}
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Rute User */}
-        <Route path="/user" element={<Home />} />
-        <Route path="/user/report" element={<Report />} />
-        <Route path="/user/statistics" element={<Statistics />} />
-        <Route path="/user/article" element={<Articles />} />
-        <Route path="/user/article/:articleId" element={<ArticleDetail />} />
-        <Route path="/user/contact" element={<Contact />} />
+        {/* Halaman User */}
+        <Route path="/user" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/user/report/create" element={<ProtectedRoute><Report /></ProtectedRoute>} />
+        <Route path="/user/statistics" element={<ProtectedRoute><Statistics /></ProtectedRoute>} />
+        <Route path="/user/article" element={<ProtectedRoute><Articles /></ProtectedRoute>} />
+        <Route path="/user/article/:articleId" element={<ProtectedRoute><ArticleDetail /></ProtectedRoute>} />
+        <Route path="/user/contact" element={<ProtectedRoute><Contact /></ProtectedRoute>} />
 
-        {/* Rute Admin */}
-        <Route path="/admin" element={<><AdminHeader /><AdminDashboard /></>} />
-        <Route path="/admin/articles" element={<><AdminHeader /><AdminArticles /></>} />
-        <Route path="/admin/articles/create" element={<><AdminHeader /><AdminCreateArticle /></>} />
-        <Route path="/admin/articles/update/:id" element={<><AdminHeader /><AdminUpdateArticle /></>} />
-        <Route path="/admin/reports" element={<><AdminHeader /><AdminReports /></>} />
+        {/* Halaman Admin */}
+        <Route path="/admin" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/admin/articles" element={<ProtectedRoute requiredRole="admin"><AdminArticles /></ProtectedRoute>} />
+        <Route path="/admin/articles/create" element={<ProtectedRoute requiredRole="admin"><AdminCreateArticle /></ProtectedRoute>} />
+        <Route path="/admin/articles/update/:id" element={<ProtectedRoute requiredRole="admin"><AdminUpdateArticle /></ProtectedRoute>} />
+        <Route path="/admin/reports" element={<ProtectedRoute requiredRole="admin"><AdminReports /></ProtectedRoute>} />
       </Routes>
-    </Router>
+    </>
   );
 };
 
-export default App;
+export default () => (
+  <Router>
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  </Router>
+);

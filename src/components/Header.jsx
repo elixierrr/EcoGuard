@@ -1,9 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import Logo from '../assets/logo.png';
+import { useAuth } from '../context/authContext';
 
-const Header = () => {
-  const navigate = useNavigate();
+const Header = ({ setIsLoggedIn }) => {
+
+  const {logout} = useAuth();
+  const handleLogout = () => {
+    logout()
+  };
 
   const headerStyle = {
     backgroundColor: '#DAF5B6',
@@ -20,7 +24,7 @@ const Header = () => {
     textDecoration: 'none',
   };
 
-  const loginButtonStyle = {
+  const buttonStyle = {
     backgroundColor: '#388e3c',
     color: '#fff',
     borderRadius: '5px',
@@ -60,7 +64,7 @@ const Header = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link px-2" href="/user/report" style={navLinkStyle}>
+                <a className="nav-link px-2" href="/user/report/create" style={navLinkStyle}>
                   Report
                 </a>
               </li>
@@ -81,12 +85,12 @@ const Header = () => {
               </li>
             </ul>
 
-            {/* Login Button */}
+            {/* Logout Button */}
             <button
-              style={{ ...loginButtonStyle, marginLeft: '20px' }}
-              onClick={() => navigate('/login')}
+              style={{ ...buttonStyle, marginLeft: '20px' }}
+              onClick={handleLogout}
             >
-              Login
+              Logout
             </button>
           </div>
         </nav>

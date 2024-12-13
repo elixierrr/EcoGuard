@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const Report = () => {
   const cardStyle = {
@@ -21,8 +22,12 @@ const Report = () => {
     date: '',
     location: '',
     content: '',
+    severity: 'medium', // Default value
     image: null,
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,10 +44,40 @@ const Report = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
-    alert('Your report has been submitted!');
+    setLoading(true);
+    setError(null);
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('title', formData.title);
+    formDataToSend.append('category', formData.category);
+    formDataToSend.append('date', formData.date);
+    formDataToSend.append('location', formData.location);
+    formDataToSend.append('reportContent', formData.content);
+    formDataToSend.append('severity', formData.severity);
+    if (formData.image) {
+      formDataToSend.append('image', formData.image);
+    }
+
+    try {
+      const response = await axios.post(
+        'http://localhost:3001/api/v1/reports', // Use endpoint for creating report
+        formDataToSend,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      alert('Your report has been submitted successfully!');
+      console.log('Response:', response.data);
+    } catch (err) {
+      setError(err.message || 'Something went wrong');
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -127,6 +162,22 @@ const Report = () => {
                   ></textarea>
                 </div>
 
+                {/* Severity */}
+                <div className="mb-3">
+                  <label htmlFor="severity" className="form-label">Severity</label>
+                  <select
+                    id="severity"
+                    name="severity"
+                    className="form-select"
+                    value={formData.severity}
+                    onChange={handleChange}
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+
                 {/* Image */}
                 <div className="mb-3">
                   <label htmlFor="image" className="form-label">Upload Image</label>
@@ -141,8 +192,11 @@ const Report = () => {
                 </div>
 
                 {/* Submit Button */}
-                <button type="submit" className="btn btn-success w-100">Submit</button>
+                <button type="submit" className="btn btn-success w-100" disabled={loading}>
+                  {loading ? 'Submitting...' : 'Submit'}
+                </button>
               </form>
+              {error && <div className="alert alert-danger mt-3">{error}</div>}
             </div>
           </div>
         </div>

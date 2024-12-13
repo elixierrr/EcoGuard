@@ -42,7 +42,7 @@ const Articles = () => {
   };
 
   const sectionStyle = {
-    background: 'linear-gradient(to bottom, #ffffff, #DAF5B6)',
+    background: 'linear-gradient(to bottom, #DAF5B6, #ffffff)',
     padding: '50px 20px',
     borderRadius: '10px',
     marginBottom: '20px',

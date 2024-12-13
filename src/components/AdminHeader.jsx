@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../assets/logo.png';
+import { useAuth } from '../context/authContext';
 
 const AdminHeader = () => {
   const navigate = useNavigate();
+  const {logout} = useAuth();
 
   const headerStyle = {
     backgroundColor: '#DAF5B6',
@@ -70,9 +72,7 @@ const AdminHeader = () => {
             <button
               style={{ ...logoutButtonStyle, marginLeft: '20px' }}
               onClick={() => {
-                // Logic for logout
-                console.log('Admin logged out');
-                navigate('/login');
+                logout()
               }}
             >
               Logout

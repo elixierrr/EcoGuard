@@ -2,28 +2,30 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import axios from 'axios'; // Import axios
 import Logo from '../assets/logo.png';
+import { useAuth } from '../context/authContext';
 
 const Login = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false); // State untuk loading
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true); // Set loading menjadi true
 
     try {
-      const response = await axios.post('https://localhost:3001/api/v1/auth/login', {
+      const response = await axios.post('http://localhost:3001/api/v1/auth/login', {
         email,
         password,
       });
 
-      if (response.status === 200) {
-        const { token } = response.data; // Asumsikan API mengembalikan token
-        localStorage.setItem('token', token); // Simpan token ke localStorage
-        localStorage.setItem('isLoggedIn', 'true');
-        setIsLoggedIn(true);
+      if (response.status === 200) {  
+        const token  = response.data.content.tokens.accessToken.token; 
+        const role = response.data.content.user.role;
+        const userId = response.data.content.user.id;
+        login(token, role, userId);
         navigate('/user'); // Redirect ke halaman user
       }
     } catch (error) {
