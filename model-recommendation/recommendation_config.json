@@ -1,0 +1,83 @@
+{
+  "category_mapping": {
+    "air pollution": 1,
+    "water pollution": 0,
+    "waste management": 2
+  },
+  "severity_mapping": {
+    "high": 2,
+    "medium": 1,
+    "low": 0
+  },
+  "recommendations": {
+    "1": {
+      "high": [
+        "1. Keluarkan peringatan kualitas udara kepada masyarakat",
+        "2. Lakukan pengukuran tingkat polusi udara segera",
+        "3. Identifikasi dan hentikan sumber utama polusi udara",
+        "4. Evakuasi warga jika diperlukan dari area terdampak",
+        "5. Koordinasi dengan tim medis untuk bantuan darurat"
+      ],
+      "medium": [
+        "1. Pasang alat pemantau kualitas udara tambahan",
+        "2. Batasi aktivitas industri penyebab polusi udara",
+        "3. Bagikan masker kepada masyarakat terdampak",
+        "4. Sosialisasi cara perlindungan diri dari polusi udara",
+        "5. Lakukan penyemprotan air untuk menekan debu"
+      ],
+      "low": [
+        "1. Pantau indeks kualitas udara secara rutin",
+        "2. Dokumentasikan sumber-sumber polusi udara",
+        "3. Periksa sistem filtering udara di area terdampak",
+        "4. Buat rencana mitigasi jangka panjang",
+        "5. Edukasi masyarakat tentang bahaya polusi udara"
+      ]
+    },
+    "0": {
+      "high": [
+        "1. Segera lakukan pengujian kualitas air di lokasi tercemar",
+        "2. Investigasi dan hentikan sumber pencemaran air",
+        "3. Koordinasi dengan DLHK untuk penanganan darurat",
+        "4. Pasang penghalang untuk mencegah penyebaran kontaminan",
+        "5. Siapkan pasokan air bersih alternatif untuk warga"
+      ],
+      "medium": [
+        "1. Lakukan pemantauan rutin kualitas air",
+        "2. Identifikasi potensi sumber pencemaran",
+        "3. Koordinasi dengan industri sekitar untuk pengelolaan limbah",
+        "4. Tingkatkan pengawasan pembuangan limbah",
+        "5. Edukasi masyarakat tentang pencegahan pencemaran air"
+      ],
+      "low": [
+        "1. Pantau perubahan kualitas air secara berkala",
+        "2. Dokumentasikan temuan pencemaran",
+        "3. Sosialisasi cara menjaga kebersihan sumber air",
+        "4. Periksa sistem pengolahan air secara rutin",
+        "5. Buat laporan pemantauan bulanan"
+      ]
+    },
+    "2": {
+      "high": [
+        "1. Mobilisasi tim penanganan limbah darurat",
+        "2. Isolasi area pembuangan limbah berbahaya",
+        "3. Koordinasi dengan dinas kebersihan untuk pembersihan",
+        "4. Siapkan tempat pembuangan sementara yang aman",
+        "5. Terapkan protokol penanganan limbah B3"
+      ],
+      "medium": [
+        "1. Tingkatkan frekuensi pengangkutan sampah",
+        "2. Optimalkan sistem pemilahan sampah",
+        "3. Perbaiki fasilitas tempat pembuangan sampah",
+        "4. Koordinasi dengan petugas kebersihan setempat",
+        "5. Sosialisasi sistem 3R (Reduce, Reuse, Recycle)"
+      ],
+      "low": [
+        "1. Pantau volume sampah secara berkala",
+        "2. Perbaiki jadwal pengangkutan sampah",
+        "3. Tingkatkan kesadaran pemilahan sampah",
+        "4. Maintenance fasilitas pengolahan sampah",
+        "5. Dokumentasikan pengelolaan sampah"
+      ]
+    }
+  }
+}
