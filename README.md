@@ -27,7 +27,12 @@ In recent years, environmental issues such as air pollution, poor waste manageme
 
 ---
 
-## Cloud Architecture
+## Cloud Implementation
+|       Service      | Framework    |  Tools             |                                                                    
+| :----------------- | :----------: | :----------------: | 
+| Front End          | React JS     |  App Engine        | 
+| Back End           | Express JS   |  App Engine        | 
 
-![CloudArchitecture](https://github.com/elixierrr/EcoGuard/blob/master/assets/CloudArchitecture.png)
+
+
 
