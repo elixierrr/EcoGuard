@@ -1,6 +1,7 @@
 const reportsFacade = require('#facades/reports');
 const upload = require('#utils/fileUpload'); // Middleware file upload
 const { createOKResponse, createErrorResponse } = require('#factories/responses/api');
+const environmentalReportAI = require('#ai/environtmentalReportAi');
 
 module.exports = ReportsController;
 
@@ -8,8 +9,10 @@ function ReportsController() {
   const _create = async (req, res) => {
     try {
       const { title, category, date, location, reportContent, severity } = req.body;
-      const image = req.file?.filename; // Filename dari file upload
-      const { userId } = req.params; 
+      const image = req.file?.filename; 
+      const { userId } = req.params;
+      const reportData = { title, category, date, location, reportContent, severity }
+      const aiAnalysis = await environmentalReportAI.analyzeReport(reportData);
 
       const report = await reportsFacade.createReport({
         title,
@@ -17,11 +20,11 @@ function ReportsController() {
         date,
         location,
         reportContent,
-        severity,
         image,
-        createdBy:userId
+        severity,
+        createdBy: userId
       });
-      return createOKResponse({ res, content: report });
+      return createOKResponse({ res, content: {report, aiAnalysis} });
     } catch (error) {
       console.error('ReportsController._create error:', error);
       return createErrorResponse({ res, error: { message: error.message }, status: 400 });
@@ -65,8 +68,20 @@ function ReportsController() {
     try {
       const { id } = req.params;
       const data = req.body;
-      if (req.file) data.image = req.file.filename; // Handle file upload
-
+  
+      // Pastikan status yang dikirim valid
+      if (data.status && !['Pending', 'In Progress', 'Completed'].includes(data.status)) {
+        return createErrorResponse({
+          res,
+          error: { message: 'Invalid status value' },
+          status: 400,
+        });
+      }
+  
+      // Jika ada file (image) yang diupload, tambahkan image ke dalam data
+      if (req.file) data.image = req.file.filename;
+  
+      // Proses update laporan
       const updatedReport = await reportsFacade.updateReport(id, data);
       return createOKResponse({ res, content: updatedReport });
     } catch (error) {
@@ -86,12 +101,23 @@ function ReportsController() {
     }
   };
 
+  const _getStatistics = async (req, res) => {
+    try {
+      const statistics = await reportsFacade.getReportStatistics();
+      return createOKResponse({ res, content: statistics });
+    } catch (error) {
+      console.error('ReportsController._getStatistics error:', error);
+      return createErrorResponse({ res, error: { message: error.message }, status: 500 });
+    }
+  };
+
   return {
     create: [upload.single('image'), _create], 
     getAll: _getAll,
     getById: _getById,
     getbyUserId: _getByUserId,
     update: [upload.single('image'), _update], 
-    delete: _delete
+    delete: _delete,
+    getStatistics: _getStatistics
   };
 }

@@ -23,11 +23,21 @@ async function getArticleById(id) {
 async function updateArticle(id, data) {
     const article = await Article.findByPk(id);
     if (!article) throw new Error('Article not found');
-    return Article.update(data);
+
+    // Menambahkan klausa where untuk memastikan update diterapkan pada artikel yang benar
+    Article.update(data, {
+        where: { id }  
+    });
+    return article;
 }
 
 async function deleteArticle(id) {
-    const article = await Article.findByPk(id);
-    if (!article) throw new Error('Article not found')
-    return Article.destroy();
+    const article = await Article.findByPk(id); // Cari artikel berdasarkan primary key
+    if (!article) {
+        throw new Error('Article not found'); // Jika artikel tidak ditemukan, lempar error
+    }
+    // Gunakan where clause untuk menentukan artikel yang akan dihapus
+    return Article.destroy({
+        where: { id } // Kondisi untuk mencocokkan ID artikel
+    });
 }

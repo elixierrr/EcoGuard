@@ -8,7 +8,7 @@ function ArticlesController() {
     const _create = async (req, res) => {
         try {
             const {title, category, description, date, createdAt, updatedAt} = req.body;
-            const image = reg.file?.filename;
+            const image = req.file?.filename;
 
             const article = await articlesFacade.createArticle({
                 title,
@@ -53,14 +53,15 @@ function ArticlesController() {
             const { id } = req.params;
             const data = req.body;
             if (req.file) data.image = req.file.filename;
-
-            const updateArticle = await articlesFacade.updateArticle(id, data);
-            return createOKResponse({ res, content: updateArticle });
+    
+            const updatedArticle = await articlesFacade.updateArticle(id, data);
+            return createOKResponse({ res, content: updatedArticle });
         } catch (error) {
             console.error('ArticlesController._update error:', error);
-            return createErrorResponse({ res, error: { message: error.message }, status: 400});
+            return createErrorResponse({ res, error: { message: error.message }, status: 400 });
         }
     };
+    
 
     const _delete = async (req, res) => {
         try {
