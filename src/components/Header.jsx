@@ -63,10 +63,22 @@ const Header = ({ setIsLoggedIn }) => {
                   Home
                 </a>
               </li>
-              <li className="nav-item">
-                <a className="nav-link px-2" href="/user/report/create" style={navLinkStyle}>
+              <li className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle px-2"
+                  href="#"
+                  id="reportDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  style={navLinkStyle}
+                >
                   Report
                 </a>
+                <ul className="dropdown-menu" aria-labelledby="reportDropdown">
+                  <li><a className="dropdown-item" href="/user/report/create">Create</a></li>
+                  <li><a className="dropdown-item" href="/user/report/list">List</a></li>
+                </ul>
               </li>
               <li className="nav-item">
                 <a className="nav-link px-2" href="/user/statistics" style={navLinkStyle}>
@@ -76,11 +88,6 @@ const Header = ({ setIsLoggedIn }) => {
               <li className="nav-item">
                 <a className="nav-link px-2" href="/user/article" style={navLinkStyle}>
                   Article
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link px-2" href="/user/contact" style={navLinkStyle}>
-                  Contact
                 </a>
               </li>
             </ul>

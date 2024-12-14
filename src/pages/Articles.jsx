@@ -1,34 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/authContext';
+import axios from 'axios';
 
 const Articles = () => {
+  const [articles, setArticles] = useState([]); // State untuk menyimpan artikel
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true); // State untuk loading
+  const { token } = useAuth();
   const navigate = useNavigate();
 
-  const articles = [
-    {
-      id: 1,
-      title: '10 Ways to Reduce Plastic Waste',
-      description: 'Plastic waste is a global issue. Here are some tips to reduce plastic consumption in your daily life.',
-      category: 'Waste Management',
-      image: 'https://via.placeholder.com/150',
-    },
-    {
-      id: 2,
-      title: 'The Impact of Air Pollution',
-      description: 'Learn about the harmful effects of air pollution and what we can do to combat it.',
-      category: 'Air Pollution',
-      image: 'https://via.placeholder.com/150',
-    },
-    {
-      id: 3,
-      title: 'Water Conservation Tips',
-      description: 'Water is a precious resource. Discover simple ways to save water and protect the environment.',
-      category: 'Water Conservation',
-      image: 'https://via.placeholder.com/150',
-    },
-  ];
+  // Ambil data artikel dari API saat komponen di-mount
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/v1/private/articles/', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Gunakan token dari authContext
+          },
+        });
+        setArticles(response.data.content); // Simpan data artikel ke state
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      } finally {
+        setLoading(false); // Set loading selesai
+      }
+    };
 
+    fetchArticles();
+  }, []);
+
+  // Filter artikel berdasarkan pencarian
   const filteredArticles = articles.filter((article) =>
     article.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -38,7 +40,7 @@ const Articles = () => {
   };
 
   const handleArticleClick = (id) => {
-    navigate(`/article/${id}`);
+    navigate(`/user/article/${id}`); // Navigasi ke halaman detail artikel
   };
 
   const sectionStyle = {
@@ -74,6 +76,10 @@ const Articles = () => {
     marginBottom: '10px',
   };
 
+  if (loading) {
+    return <p>Loading articles...</p>;
+  }
+
   return (
     <section style={sectionStyle}>
       <h1 className="text-success mb-4" style={{ fontSize: '28px' }}>
@@ -94,24 +100,28 @@ const Articles = () => {
         }}
       />
       <div style={articleContainerStyle}>
-        {filteredArticles.map((article) => (
-          <div
-            key={article.id}
-            style={articleStyle}
-            onClick={() => handleArticleClick(article.id)}
-          >
-            <img
-              src={article.image}
-              alt={article.title}
-              style={articleImageStyle}
-            />
-            <h3 style={{ color: '#388e3c', fontSize: '20px' }}>{article.title}</h3>
-            <p style={{ color: '#555', fontSize: '16px' }}>{article.description}</p>
-            <p style={{ fontStyle: 'italic', fontSize: '14px', color: '#888' }}>
-              Category: {article.category}
-            </p>
-          </div>
-        ))}
+        {filteredArticles.length > 0 ? (
+          filteredArticles.map((article) => (
+            <div
+              key={article.id}
+              style={articleStyle}
+              onClick={() => handleArticleClick(article.id)}
+            >
+              <img
+                src={`http://localhost:3001/uploads/${article.image}`}
+                alt={article.title}
+                style={articleImageStyle}
+              />
+              <h3 style={{ color: '#388e3c', fontSize: '20px' }}>{article.title}</h3>
+              <p style={{ color: '#555', fontSize: '16px' }}>{article.description}</p>
+              <p style={{ fontStyle: 'italic', fontSize: '14px', color: '#888' }}>
+                Category: {article.category}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p>No articles found.</p>
+        )}
       </div>
     </section>
   );

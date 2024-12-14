@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '../context/authContext';
 
 const Report = () => {
   const cardStyle = {
@@ -28,6 +29,8 @@ const Report = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [aiAnalysis, setAiAnalysis] = useState(null); // AI Analysis state
+  const { token, userId } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,19 +65,21 @@ const Report = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:3001/api/v1/reports', // Use endpoint for creating report
+        `http://localhost:3001/api/v1/private/reports/${userId}`, // Use endpoint for creating report
         formDataToSend,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
           },
         }
       );
       alert('Your report has been submitted successfully!');
-      console.log('Response:', response.data);
+      console.log('Response:', response.data.content);
+      setAiAnalysis(response.data.content.aiAnalysis); // Set AI analysis data
     } catch (err) {
       setError(err.message || 'Something went wrong');
-      console.error('Error:', err);
+      console.log('Error:', err);
     } finally {
       setLoading(false);
     }
@@ -87,7 +92,25 @@ const Report = () => {
           <div className="card" style={cardStyle}>
             <div className="card-body">
               <h1 style={headingStyle}>Submit a Report</h1>
+
+              {/* AI Analysis Notification */}
+              {aiAnalysis && (
+                <div className="alert alert-warning mb-4">
+                  <h5>AI Analysis:</h5>
+                  <p><strong>Predicted Impact:</strong> {aiAnalysis.aiPrediction.predictedImpact}</p>
+                  <p><strong>Confidence Score:</strong> {(aiAnalysis.aiPrediction.confidenceScore * 100).toFixed(2)}%</p>
+                  <p><strong>Text-Based Severity:</strong> {aiAnalysis.textBasedSeverity}</p>
+                  <h6>Recommendations:</h6>
+                  <ul>
+                    {aiAnalysis.recommendations.map((rec, index) => (
+                      <li key={index}>{rec}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit}>
+                {/* Form Fields */}
                 {/* Title */}
                 <div className="mb-3">
                   <label htmlFor="title" className="form-label">Title</label>

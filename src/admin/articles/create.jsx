@@ -3,13 +3,17 @@ import { useAuth } from '../../context/authContext';
 import axios from 'axios';
 
 const CreateArticle = () => {
-  const { token } = useAuth();
+  const { token, userId } = useAuth();
+  console.log(userId, token);
+  
+
   const [formState, setFormState] = useState({
     title: '',
     description: '',
     category: '',
     image: null,
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +32,15 @@ const CreateArticle = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Token:', token);
 
+    // Validasi form
+    if (!formState.title || !formState.description || !formState.category || !formState.image) {
+      alert('Please fill all fields and upload an image!');
+      return;
+    }
+
+    setLoading(true); // Mulai loading
     try {
       const formData = new FormData();
       formData.append('title', formState.title);
@@ -36,25 +48,38 @@ const CreateArticle = () => {
       formData.append('category', formState.category);
       formData.append('image', formState.image);
 
-      const response = await axios.post('http://localhost:3001/api/v1/articles/', formData, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Menggunakan token dari authContext
-        },
-      });
+      const response = await axios.post(
+        `http://localhost:3001/api/v1/private/admin/articles/${userId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Gunakan token dari authContext
+          },
+        }
+      );
 
-      console.log('Token:', token); // Tambahkan ini untuk debugging
+       // Debugging token
       console.log('Response:', response);
+
       alert('Article created successfully!');
-      // Tambahkan tindakan lain jika perlu, seperti mereset form atau mengarahkan pengguna
+      // Reset form state
+      setFormState({
+        title: '',
+        description: '',
+        category: '',
+        image: null,
+      });
     } catch (error) {
       console.error('Error creating article:', error);
 
-      // Memeriksa apakah error.response dan error.response.data ada
+      // Tampilkan pesan error
       if (error.response && error.response.data) {
         alert(`Error: ${error.response.data.message}`);
       } else {
         alert('Error: Something went wrong.');
       }
+    } finally {
+      setLoading(false); // Selesai loading
     }
   };
 
@@ -107,9 +132,16 @@ const CreateArticle = () => {
             className="form-control"
             accept="image/*"
             onChange={handleFileChange}
+            required
           />
         </div>
-        <button type="submit" className="btn btn-success w-100">Create Article</button>
+        <button
+          type="submit"
+          className="btn btn-success w-100"
+          disabled={loading}
+        >
+          {loading ? 'Creating...' : 'Create Article'}
+        </button>
       </form>
     </div>
   );

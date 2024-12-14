@@ -29,172 +29,129 @@ const Register = () => {
 
     try {
       const formData = {
-        email: email,
-        password: password,
-        firstName: firstName,
-        lastName: lastName,
+        email,
+        password,
+        firstName,
+        lastName,
       };
-      console.log(JSON.stringify(formData));
 
       const response = await axios.post('http://localhost:3001/api/v1/auth/register', formData);
 
       if (response) {
         alert('Registration successful! Please log in.');
-        navigate('/login'); // Redirect to login page
+        navigate('/login');
       }
     } catch (error) {
-      console.log('Registration error:', error);
-      if (error.response) {
-        console.log('Error response data:', error.response.data);
-      } else {
-        console.log('Error details:', error);
-      }
-      alert(
-        'Registration failed: ' +
-          (error.response?.data?.message || 'An unexpected error occurred.')
-      );
+      console.error('Registration error:', error);
+      alert('Registration failed: ' + (error.response?.data?.message || 'An unexpected error occurred.'));
     } finally {
       setLoading(false);
     }
   };
 
-  // Inline styles
-  const styles = {
-    page: {
-      display: 'flex',
-      minHeight: '100vh',
-      backgroundColor: '#DAF5B6',
-    },
-    cover: {
-      flex: 0.5,
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px',
-      backgroundColor: '#ffffff',
-      borderTopRightRadius: '50px',
-      borderBottomRightRadius: '50px',
-      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-    },
-    logo: {
-      width: '300px',
-      marginBottom: '20px',
-    },
-    formContainer: {
-      flex: 1.5,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '20px',
-    },
-    form: {
-      width: '100%',
-      maxWidth: '400px',
-      backgroundColor: '#ffffff',
-      padding: '20px',
-      borderRadius: '10px',
-      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-    },
-    button: {
-      backgroundColor: loading ? '#a5d6a7' : '#388e3c',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '5px',
-      padding: '10px',
-      width: '100%',
-      fontSize: '16px',
-      cursor: loading ? 'not-allowed' : 'pointer',
-    },
-  };
-
   return (
-    <div style={styles.page}>
-      <div style={styles.cover}>
-        <img src={Logo} alt="EcoGuard Logo" style={styles.logo} />
-      </div>
+    <div
+      className="container-fluid min-vh-100 d-flex align-items-center justify-content-center"
+      style={{ backgroundColor: '#DAF5B6' }}
+    >
+      <div className="row w-100">
+        {/* Cover Section */}
+        <div
+          className="col-12 col-md-6 d-flex flex-column align-items-center justify-content-center bg-white p-4 shadow order-1"
+          style={{
+            minHeight: '250px',
+            borderTopRightRadius: '50px',
+            borderBottomRightRadius: '50px',
+          }}
+        >
+          <img
+            src={Logo}
+            alt="EcoGuard Logo"
+            className="img-fluid"
+            style={{ maxWidth: '250px', transform: 'rotate(90deg)' }}
+          />
+        </div>
 
-      <div style={styles.formContainer}>
-        <div style={styles.form}>
-          <h2 className="text-center text-success" style={{ fontSize: '28px' }}>
-            Register
-          </h2>
-          <form onSubmit={handleRegister}>
-            <div className="form-group mt-3">
-              <label htmlFor="firstName">First Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="firstName"
-                placeholder="Enter your first name"
-                required
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </div>
-            <div className="form-group mt-3">
-              <label htmlFor="lastName">Last Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="lastName"
-                placeholder="Enter your last name"
-                required
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </div>
-            <div className="form-group mt-3">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                placeholder="Enter your email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div className="form-group mt-3">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                placeholder="Enter your password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <div className="form-group mt-3">
-              <label htmlFor="confirmPassword">Confirm Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="confirmPassword"
-                placeholder="Confirm your password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-            <button
-              type="submit"
-              style={styles.button}
-              className="mt-4"
-              disabled={loading}
-            >
-              {loading ? 'Registering...' : 'Register'}
-            </button>
-          </form>
-          <p className="text-center text-muted mt-3" style={{ fontSize: '14px' }}>
-            Already have an account?{' '}
-            <a href="/login" className="text-success">
-              Login here
-            </a>
-          </p>
+        {/* Form Section */}
+        <div
+          className="col-12 col-md-6 d-flex flex-column align-items-center justify-content-center p-4 order-2 order-md-1"
+        >
+          <div className="bg-white p-4 rounded shadow" style={{ maxWidth: '400px', width: '100%' }}>
+            <h2 className="text-center text-success mb-4" style={{ fontSize: '28px' }}>Register</h2>
+            <form onSubmit={handleRegister}>
+              <div className="form-group mb-3">
+                <label htmlFor="firstName">First Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="firstName"
+                  placeholder="Enter your first name"
+                  required
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label htmlFor="lastName">Last Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="lastName"
+                  placeholder="Enter your last name"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  id="email"
+                  placeholder="Enter your email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="password"
+                  placeholder="Enter your password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="form-group mb-3">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  id="confirmPassword"
+                  placeholder="Confirm your password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
+              <button
+                type="submit"
+                className="btn btn-success w-100"
+                disabled={loading}
+                style={{ fontSize: '16px' }}
+              >
+                {loading ? 'Registering...' : 'Register'}
+              </button>
+            </form>
+            <p className="text-center text-muted mt-3" style={{ fontSize: '14px' }}>
+              Already have an account? <a href="/login" className="text-success">Login here</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>

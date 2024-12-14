@@ -2,8 +2,7 @@ import React from 'react';
 import ReportButton from '../components/ReportButton';
 import FeatureCards from '../components/FeatureCards';
 import HomeBg from '../assets/home-bg.png';
-import EducationalTips from '../components/EducationalTips';
-import Testimonials from '../components/Testimonials';
+
 
 const Home = () => {
   const heroStyle = {
@@ -72,20 +71,6 @@ const Home = () => {
             Features
           </h2>
           <FeatureCards />
-        </div>
-      </section>
-
-      {/* Educational Tips Section */}
-      <section>
-        <div className="container mt-5">
-          <EducationalTips />
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section>
-        <div className="container mt-5">
-          <Testimonials />
         </div>
       </section>
     </div>

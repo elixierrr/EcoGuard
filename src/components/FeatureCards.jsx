@@ -2,11 +2,9 @@ import React from 'react';
 
 const FeatureCards = () => {
   const features = [
-    { title: 'Statistics', description: 'View environmental data.', link: '/statistics' },
-    { title: 'Articles', description: 'Read environmental articles.', link: '/articles' },
-    { title: 'Contact', description: 'Reach out to us.', link: '/contact' },
-    { title: 'Report History', description: 'Track your report progress.', link: '/history' },
-    { title: 'Educational Resources', description: 'Learn how to protect the environment.', link: '/resources' },
+    { title: 'Report', description: 'Create your report', link: 'user/report/create' },
+    { title: 'Statistics', description: 'View environmental data.', link: 'user/statistics' },
+    { title: 'Articles', description: 'Read environmental articles.', link: 'user/article' },
   ];
 
   return (

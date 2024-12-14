@@ -1,45 +1,85 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bar, Pie } from 'react-chartjs-2';
+import { useAuth } from '../context/authContext';
 import 'chart.js/auto';
+import axios from 'axios';
 
 const Statistics = () => {
-  // Contoh Data Dinamis
-  const statsData = {
-    totalReports: 270,
-    airPollution: 120,
-    wasteManagement: 85,
-    waterPollution: 65,
+  const [statsData, setStatsData] = useState({
+    status: {},
+    category: {},
+    severity: {},
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { token } = useAuth();
+
+  // Fungsi untuk memformat label (menghapus underscore dan mengganti dengan spasi)
+  const formatLabel = (label) =>
+    label.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+
+  // Fetch data dari API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/v1/private/statistics', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.data.content) {
+          setStatsData(response.data.content);
+        } else {
+          throw new Error('Invalid response data');
+        }
+      } catch (err) {
+        setError(err.message || 'Failed to fetch statistics');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  // Filter data untuk menghapus key yang kosong
+  const filterEmptyKeys = (data) => {
+    return Object.fromEntries(
+      Object.entries(data).filter(([key]) => key.trim() !== '')
+    );
   };
 
-  // Data untuk Grafik
+  // Data yang difilter
+  const filteredCategoryData = filterEmptyKeys(statsData.category);
+  const filteredSeverityData = filterEmptyKeys(statsData.severity);
+
+  // Siapkan data untuk Bar Chart
   const barData = {
-    labels: ['Air Pollution', 'Waste Management', 'Water Pollution'],
+    labels: Object.keys(filteredCategoryData).map((key) => formatLabel(key)),
     datasets: [
       {
         label: 'Reported Issues',
-        data: [
-          statsData.airPollution,
-          statsData.wasteManagement,
-          statsData.waterPollution,
-        ],
+        data: Object.values(filteredCategoryData),
         backgroundColor: ['#81c784', '#64b5f6', '#4db6ac'],
       },
     ],
   };
 
+  // Siapkan data untuk Pie Chart
   const pieData = {
-    labels: ['Air Pollution', 'Waste Management', 'Water Pollution'],
+    labels: Object.keys(filteredSeverityData).map((key) => formatLabel(key)),
     datasets: [
       {
-        data: [
-          statsData.airPollution,
-          statsData.wasteManagement,
-          statsData.waterPollution,
-        ],
-        backgroundColor: ['#81c784', '#64b5f6', '#4db6ac'],
+        data: Object.values(filteredSeverityData),
+        backgroundColor: ['#e57373', '#ffd54f', '#81c784'],
       },
     ],
   };
+
+  // Render komponen
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <section
@@ -76,34 +116,34 @@ const Statistics = () => {
                 boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
               }}
             >
+              <h3 className="text-success">Pending Reports</h3>
+              <p>{statsData.status['Pending'] || 0}</p>
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-6">
+            <div
+              className="p-4 bg-light text-center"
+              style={{
+                backgroundColor: '#f1f8e9',
+                borderRadius: '10px',
+                boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <h3 className="text-success">Completed Reports</h3>
+              <p>{statsData.status['Completed'] || 0}</p>
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-6">
+            <div
+              className="p-4 bg-light text-center"
+              style={{
+                backgroundColor: '#f1f8e9',
+                borderRadius: '10px',
+                boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
+              }}
+            >
               <h3 className="text-success">Total Reports</h3>
-              <p>{statsData.totalReports}</p>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-6">
-            <div
-              className="p-4 bg-light text-center"
-              style={{
-                backgroundColor: '#f1f8e9',
-                borderRadius: '10px',
-                boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <h3 className="text-success">Laporan Terselesaikan</h3>
-              <p>185</p>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-6">
-            <div
-              className="p-4 bg-light text-center"
-              style={{
-                backgroundColor: '#f1f8e9',
-                borderRadius: '10px',
-                boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <h3 className="text-success">Area Terdampak</h3>
-              <p>42 Regions</p>
+              <p>{Object.values(statsData.status).reduce((a, b) => a + b, 0)}</p>
             </div>
           </div>
         </div>
@@ -118,7 +158,7 @@ const Statistics = () => {
 
           {/* Pie Chart */}
           <div className="col-md-6">
-            <h4 className="text-success">Category Distribution</h4>
+            <h4 className="text-success">Severity Distribution</h4>
             <Pie data={pieData} options={{ maintainAspectRatio: true }} />
           </div>
         </div>

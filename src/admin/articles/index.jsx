@@ -1,18 +1,79 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../../context/authContext';
 
 const AdminArticleIndex = () => {
-  const articles = [
-    { id: 1, title: '10 Ways to Reduce Plastic Waste', category: 'Waste Management' },
-    { id: 2, title: 'The Impact of Air Pollution', category: 'Air Pollution' },
-  ];
+  const { token } = useAuth(); // Ambil token dari AuthContext
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this article?')) {
-      console.log(`Article with ID ${id} deleted`);
+  // Fungsi untuk mengambil data artikel
+  useEffect(() => {
+    const fetchArticles = async () => {
+      if (!token) {
+        console.error('Token is missing. Please log in again.');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get('http://localhost:3001/api/v1/private/articles', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Kirim token untuk autentikasi
+          },
+        });
+        setArticles(response.data.content || []); // Sesuaikan dengan struktur respons backend
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+        if (error.response) {
+          const { status, data } = error.response;
+          alert(`Error ${status}: ${data.message || 'Failed to fetch articles.'}`);
+        } else {
+          alert('Failed to connect to the server. Please try again later.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, [token]);
+
+  // Fungsi untuk menghapus artikel
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this article?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:3001/api/v1/private/admin/articles/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Kirim token untuk autentikasi
+        },
+      });
       alert('Article deleted successfully!');
+      setArticles((prevArticles) => prevArticles.filter((article) => article.id !== id)); // Perbarui daftar artikel
+    } catch (error) {
+      console.error('Error deleting article:', error);
+      if (error.response) {
+        const { status, data } = error.response;
+        alert(`Error ${status}: ${data.message || 'Failed to delete article.'}`);
+      } else {
+        alert('Failed to connect to the server. Please try again later.');
+      }
     }
   };
+
+  // Jika data masih diambil, tampilkan loading
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // Jika tidak ada artikel ditemukan
+  if (!articles.length) {
+    return <div>No articles found.</div>;
+  }
 
   return (
     <div className="container my-5">
@@ -36,7 +97,10 @@ const AdminArticleIndex = () => {
               <td>{article.title}</td>
               <td>{article.category}</td>
               <td>
-                <Link to={`/admin/articles/update/${article.id}`} className="btn btn-primary btn-sm me-2">
+                <Link
+                  to={`/admin/articles/update/${article.id}`}
+                  className="btn btn-primary btn-sm me-2"
+                >
                   Edit
                 </Link>
                 <button

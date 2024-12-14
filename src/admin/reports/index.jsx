@@ -15,12 +15,11 @@ const AdminReports = () => {
 
   const fetchReports = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/v1/private/reports/', {
+      const response = await axios.get('http://localhost:3001/api/v1/private/admin/reports/', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`, // Gunakan token dari local storage untuk autentikasi
         },
       });
-      console.log('Response Data:', response.data.content); // Tambahkan ini untuk mencetak data laporan
       if (Array.isArray(response.data.content)) {
         setReports(response.data.content);
       } else {
@@ -46,6 +45,28 @@ const AdminReports = () => {
         setError(err.message || 'Error deleting report');
         console.error('Error deleting report:', err);
       }
+    }
+  };
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3001/api/v1/private/admin/reports/${id}`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      // Update the status in the local state after successful update
+      const updatedReports = reports.map((report) =>
+        report.id === id ? { ...report, status: response.data.content.status } : report
+      );
+      setReports(updatedReports);
+    } catch (err) {
+      setError(err.message || 'Error updating report status');
+      console.error('Error updating report status:', err);
     }
   };
 
@@ -76,7 +97,35 @@ const AdminReports = () => {
               <p className="card-text">
                 <strong>Location:</strong> {report.location}
               </p>
-              <p className="card-text">{report.content}</p>
+              <p className="card-text">{report.reportContent}</p>
+
+              {/* Display Image */}
+              {report.image && (
+                <div className="mb-3">
+                  <img
+                    src={`http://localhost:3001/uploads/${report.image}`} // Assuming images are stored in 'uploads' folder
+                    alt="Report Image"
+                    className="img-fluid"
+                    style={{ maxHeight: '200px', objectFit: 'cover' }}
+                  />
+                </div>
+              )}
+
+              {/* Status Dropdown */}
+              <div className="form-group">
+                <label htmlFor={`status-${report.id}`}>Status</label>
+                <select
+                  id={`status-${report.id}`}
+                  className="form-control"
+                  value={report.status}
+                  onChange={(e) => handleStatusChange(report.id, e.target.value)}
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+
               <button
                 className="btn btn-danger"
                 onClick={() => handleDelete(report.id)}
